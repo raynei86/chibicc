@@ -52,6 +52,11 @@ notification when a free chapter is available online or the book is published.
 I pronounce chibicc as _chee bee cee cee_. "chibi" means "mini" or
 "small" in Japanese. "cc" stands for C compiler.
 
+## Reimplementation guide
+
+If you want to rebuild this compiler from scratch in incremental steps, see
+[REIMPLEMENTATION_GUIDE.md](REIMPLEMENTATION_GUIDE.md).
+
 ## Status
 
 chibicc supports almost all mandatory features and most optional

@@ -6,15 +6,15 @@ You are not expected to understand every C11 corner case before starting. Instea
 
 All references below point to this repository for concrete implementation tips:
 
-- `/home/runner/work/chibicc/chibicc/chibicc.h`
-- `/home/runner/work/chibicc/chibicc/main.c`
-- `/home/runner/work/chibicc/chibicc/tokenize.c`
-- `/home/runner/work/chibicc/chibicc/preprocess.c`
-- `/home/runner/work/chibicc/chibicc/parse.c`
-- `/home/runner/work/chibicc/chibicc/type.c`
-- `/home/runner/work/chibicc/chibicc/codegen.c`
-- `/home/runner/work/chibicc/chibicc/Makefile`
-- `/home/runner/work/chibicc/chibicc/test`
+- [chibicc.h](./chibicc.h)
+- [main.c](./main.c)
+- [tokenize.c](./tokenize.c)
+- [preprocess.c](./preprocess.c)
+- [parse.c](./parse.c)
+- [type.c](./type.c)
+- [codegen.c](./codegen.c)
+- [Makefile](./Makefile)
+- [test](./test)
 
 ---
 
@@ -32,10 +32,10 @@ At a high level:
 
 In this repo, the major boundaries are clean and visible:
 
-- Driver/tool invocation: `main.c`
-- Frontend lexing/preprocessing/parsing/typing: `tokenize.c`, `preprocess.c`, `parse.c`, `type.c`
-- Backend code emission: `codegen.c`
-- Shared core structs and APIs: `chibicc.h`
+- Driver/tool invocation: [main.c](./main.c)
+- Frontend lexing/preprocessing/parsing/typing: [tokenize.c](./tokenize.c), [preprocess.c](./preprocess.c), [parse.c](./parse.c), [type.c](./type.c)
+- Backend code emission: [codegen.c](./codegen.c)
+- Shared core structs and APIs: [chibicc.h](./chibicc.h)
 
 Beginner tip: keep these boundaries in your own rewrite. Debugging is much easier when each stage has a clear input and output.
 
@@ -61,9 +61,9 @@ int main() { return 42; }
 ### Codebase references
 
 - Driver option and subprocess structure:
-  - `parse_args`, `run_subprocess`, `run_cc1`, `assemble`, `run_linker` in `/home/runner/work/chibicc/chibicc/main.c`
+  - `parse_args`, `run_subprocess`, `run_cc1`, `assemble`, `run_linker` in [main.c](./main.c)
 - Build flow reference:
-  - `test`, `test-stage2`, and compile/link recipes in `/home/runner/work/chibicc/chibicc/Makefile`
+  - [test](./test), `test-stage2`, and compile/link recipes in [Makefile](./Makefile)
 
 ### Beginner checkpoint
 
@@ -71,7 +71,7 @@ If you can compile one function that returns a constant, stop and verify end-to-
 
 ---
 
-## 2) Define your core data model early (`chibicc.h` equivalent)
+## 2) Define your core data model early ([chibicc.h](./chibicc.h) equivalent)
 
 ### Why this matters
 
@@ -87,7 +87,7 @@ Most implementation pain in a compiler comes from unstable core structs. Freeze 
 
 ### Codebase references
 
-In `/home/runner/work/chibicc/chibicc/chibicc.h`, study:
+In [chibicc.h](./chibicc.h), study:
 
 - Token model:
   - `TokenKind` enum (`TK_IDENT`, `TK_PUNCT`, `TK_KEYWORD`, `TK_STR`, `TK_NUM`, `TK_PP_NUM`, `TK_EOF`)
@@ -121,7 +121,7 @@ Good errors speed up every future stage.
 
 ### Codebase references
 
-In `/home/runner/work/chibicc/chibicc/tokenize.c`:
+In [tokenize.c](./tokenize.c):
 
 - `error`
 - `verror_at`
@@ -146,7 +146,7 @@ Implement:
 - mandatory token consume (`skip`)
 - optional consume (`consume`)
 
-Reference: `/home/runner/work/chibicc/chibicc/tokenize.c` (`equal`, `skip`, `consume`, `new_token`)
+Reference: [tokenize.c](./tokenize.c) (`equal`, `skip`, `consume`, `new_token`)
 
 ### 4.2 Identifier and punctuator scanning
 
@@ -174,7 +174,7 @@ Reference functions:
 
 - `read_escaped_char`
 - `string_literal_end`
-- string literal readers in `/home/runner/work/chibicc/chibicc/tokenize.c`
+- string literal readers in [tokenize.c](./tokenize.c)
 
 ### 4.4 Source normalization (important and often skipped by beginners)
 
@@ -199,11 +199,11 @@ This codebase tokenizes some numbers first as preprocessing-number and then conv
 - `convert_pp_number`
 - `convert_pp_tokens`
 
-Reference: `/home/runner/work/chibicc/chibicc/tokenize.c`
+Reference: [tokenize.c](./tokenize.c)
 
 ### Beginner checkpoint
 
-Add a mode to print tokens (see `print_tokens` in `main.c`) and verify punctuation/spacing behavior on real source files.
+Add a mode to print tokens (see `print_tokens` in [main.c](./main.c)) and verify punctuation/spacing behavior on real source files.
 
 ---
 
@@ -232,7 +232,7 @@ Implement in precedence order:
 - `postfix`
 - `primary`
 
-Reference: function set in `/home/runner/work/chibicc/chibicc/parse.c`
+Reference: function set in [parse.c](./parse.c)
 
 ### 5.2 Then statements
 
@@ -259,7 +259,7 @@ Keep dedicated constructors:
 - `new_num`
 - `new_var_node`
 
-Reference: `/home/runner/work/chibicc/chibicc/parse.c`
+Reference: [parse.c](./parse.c)
 
 ### Beginner tip
 
@@ -279,7 +279,7 @@ You need nested scopes for locals/typedef names/tags.
 
 ### Codebase references
 
-In `/home/runner/work/chibicc/chibicc/parse.c`:
+In [parse.c](./parse.c):
 
 - scope model: `Scope`, `VarScope`
 - scope operations: `enter_scope`, `leave_scope`
@@ -307,7 +307,7 @@ Keep parsing and typing conceptually separate. Parse first, then annotate AST wi
 
 ### Codebase references
 
-In `/home/runner/work/chibicc/chibicc/type.c`:
+In [type.c](./type.c):
 
 - canonical type singletons:
   - `ty_void`, `ty_bool`, `ty_char`, `ty_int`, `ty_long`, etc.
@@ -339,7 +339,7 @@ C declarators are one of the most confusing parts for beginners.
 
 ### Codebase references
 
-In `/home/runner/work/chibicc/chibicc/parse.c`:
+In [parse.c](./parse.c):
 
 - `declspec`
 - `pointers`
@@ -370,7 +370,7 @@ Initializers are tree-shaped (especially arrays/structs/unions/designators).
 
 ### Codebase references
 
-In `/home/runner/work/chibicc/chibicc/parse.c`:
+In [parse.c](./parse.c):
 
 - data model:
   - `Initializer`, `InitDesg`
@@ -406,7 +406,7 @@ Implement:
 - lvalue address generation (`gen_addr`)
 - load/store split (`load`, `store`)
 
-Reference: `/home/runner/work/chibicc/chibicc/codegen.c`
+Reference: [codegen.c](./codegen.c)
 
 ### 10.2 Function frame and locals
 
@@ -431,7 +431,7 @@ Implement:
 
 Reference:
 
-- `emit_data` in `/home/runner/work/chibicc/chibicc/codegen.c`
+- `emit_data` in [codegen.c](./codegen.c)
 
 ### 10.4 Function calls and ABI details
 
@@ -468,7 +468,7 @@ Implement:
 
 Reference structures:
 
-- `Macro`, `MacroParam`, `MacroArg` in `/home/runner/work/chibicc/chibicc/preprocess.c`
+- `Macro`, `MacroParam`, `MacroArg` in [preprocess.c](./preprocess.c)
 
 ### 11.2 Expansion safety with hidesets
 
@@ -533,7 +533,7 @@ A compiler executable is both frontend and toolchain orchestrator.
 
 ### Codebase references
 
-In `/home/runner/work/chibicc/chibicc/main.c`:
+In [main.c](./main.c):
 
 - option parser:
   - `parse_args`, `take_arg`, `parse_opt_x`
@@ -567,13 +567,13 @@ After baseline correctness, add features in small slices:
 ### Codebase pointers
 
 - struct/union/tag parsing:
-  - `struct_union_decl`, `struct_decl`, `union_decl`, `struct_members` in `parse.c`
+  - `struct_union_decl`, `struct_decl`, `union_decl`, `struct_members` in [parse.c](./parse.c)
 - enums:
-  - `enum_specifier` in `parse.c`
+  - `enum_specifier` in [parse.c](./parse.c)
 - generic selection:
-  - `generic_selection` in `parse.c`
+  - `generic_selection` in [parse.c](./parse.c)
 - atomics and asm nodes:
-  - `ND_CAS`, `ND_EXCH`, `ND_ASM` in `chibicc.h` and handling in `parse.c`/`codegen.c`
+  - `ND_CAS`, `ND_EXCH`, `ND_ASM` in [chibicc.h](./chibicc.h) and handling in [parse.c](./parse.c)/[codegen.c](./codegen.c)
 
 ---
 
@@ -581,12 +581,12 @@ After baseline correctness, add features in small slices:
 
 ### Repository test flow
 
-In `/home/runner/work/chibicc/chibicc/Makefile`:
+In [Makefile](./Makefile):
 
 - `make test`:
   - builds compiler,
-  - compiles feature tests in `/home/runner/work/chibicc/chibicc/test`,
-  - runs `test/driver.sh` integration checks.
+  - compiles feature tests in [test](./test),
+  - runs [test/driver.sh](./test/driver.sh) integration checks.
 - `make test-stage2`:
   - self-host style stage2 compiler build,
   - reruns test corpus with stage2 binary.
@@ -604,7 +604,7 @@ For each new feature:
 
 ## 15) Common beginner failure modes (and where to look)
 
-1. **Tokenizer offsets wrong** -> inspect `Token.loc`, `len`, and line number assignment (`add_line_numbers` in `tokenize.c`).
+1. **Tokenizer offsets wrong** -> inspect `Token.loc`, `len`, and line number assignment (`add_line_numbers` in [tokenize.c](./tokenize.c)).
 2. **Parser loops or consumes wrong token** -> check `skip`/`consume` usage patterns.
 3. **Type confusion in binary operators** -> check `usual_arith_conv` and cast insertion.
 4. **Lvalue/rvalue bugs** -> inspect `gen_addr`, `load`, and `store`.
@@ -616,14 +616,14 @@ For each new feature:
 
 ## 16) Suggested reading order inside this repo (for learners)
 
-1. `/home/runner/work/chibicc/chibicc/chibicc.h` (understand data model first)
-2. `/home/runner/work/chibicc/chibicc/tokenize.c` (input and diagnostics)
-3. `/home/runner/work/chibicc/chibicc/parse.c` (grammar and AST)
-4. `/home/runner/work/chibicc/chibicc/type.c` (semantic typing)
-5. `/home/runner/work/chibicc/chibicc/codegen.c` (assembly emission)
-6. `/home/runner/work/chibicc/chibicc/preprocess.c` (macro engine)
-7. `/home/runner/work/chibicc/chibicc/main.c` (driver and toolchain orchestration)
-8. `/home/runner/work/chibicc/chibicc/test` and `/home/runner/work/chibicc/chibicc/Makefile` (how correctness is enforced)
+1. [chibicc.h](./chibicc.h) (understand data model first)
+2. [tokenize.c](./tokenize.c) (input and diagnostics)
+3. [parse.c](./parse.c) (grammar and AST)
+4. [type.c](./type.c) (semantic typing)
+5. [codegen.c](./codegen.c) (assembly emission)
+6. [preprocess.c](./preprocess.c) (macro engine)
+7. [main.c](./main.c) (driver and toolchain orchestration)
+8. [test](./test) and [Makefile](./Makefile) (how correctness is enforced)
 
 ---
 
